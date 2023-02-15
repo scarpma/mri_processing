@@ -4,6 +4,7 @@ import numpy as np
 import tqdm
 import shutil
 import os
+import sys
 import os.path as osp
 
 def get_subdir_names(patient_directory):
@@ -45,9 +46,13 @@ def get_subdir_names(patient_directory):
 
 if __name__ == "__main__":
 
-    patient_directory = "/home/bcl/mri/"
+    assert len(sys.argv) == 2, "one argument must be provided"
+    patient_directory = osp.abspath(sys.argv[1])
+    if patient_directory[-1] == "/":
+        patient_directory = patient_directory[:-1]
+    odir = patient_directory + "_"
+    patient_directory = patient_directory + "/"
     directories, ch_names = get_subdir_names(patient_directory)
-    odir = "./mri_prova"
     
     # phase number: (2001,1008)
     
