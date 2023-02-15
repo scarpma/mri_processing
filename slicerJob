@@ -1,0 +1,1 @@
+/opt/Slicer-5.0.2-linux-amd64/Slicer --python-script dicomToNifti.py
