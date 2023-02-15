@@ -30,6 +30,9 @@ def get_subdir_names(patient_directory):
     elif "RL" in dir_:
       assert "RL" not in ch_names
       ch_names.append("RL")
+    elif "LR" in dir_:
+      assert "LR" not in ch_names
+      ch_names.append("LR")
     else:
       assert "mag" not in ch_names
       ch_names.append("mag")
