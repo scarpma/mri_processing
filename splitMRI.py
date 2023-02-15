@@ -78,7 +78,7 @@ if __name__ == "__main__":
             for i in tqdm.tqdm(range(len(filenames))):
               dcms.append(pydicom.dcmread(filenames[i], specific_tags=[tag]))
           except:
-            continue
+            break
         
           pos = [int(dcm[tag].value) for dcm in dcms]
           nPhases = max(pos) - min(pos) + 1
@@ -100,5 +100,5 @@ if __name__ == "__main__":
               #print(f"saving {v[i]}")
               shutil.copyfile(v[i], osp.join(output_dir, osp.basename(v[i])))
 
-        success = 1
+          success = 1
 
