@@ -55,33 +55,47 @@ if __name__ == "__main__":
     directories, ch_names = get_subdir_names(patient_directory)
     
     # phase number: (2001,1008)
+    # cardiac phase (0019,10d7)
+    possible_tags = [(0x2001,0x1008), (0x0019,0x10d7)]
     
-    for kk, directory in enumerate(directories):
-    
-      ch_name = ch_names[kk]
-      filenames = glob.glob(directory+"*.dcm")
-      assert len(filenames) > 1
-      
-      dcms = []
-      for i in tqdm.tqdm_notebook(range(len(filenames))):
-        dcms.append(pydicom.dcmread(filenames[i], specific_tags=[(0x2001,0x1008)]))
-    
-      pos = [int(dcm[0x2001,0x1008].value) for dcm in dcms]
-      nPhases = max(pos) - min(pos) + 1
-    
-      print(f"ch_name: {ch_name}, nPhases: {nPhases}, nSlices: {len(dcms[1])}")
-      dcms_ = {}
-    
-      for i in range(len(dcms)):
-        if pos[i] in dcms_:
-          dcms_[pos[i]].append(filenames[i])
-        else:
-          dcms_[pos[i]] = [filenames[i]]
-    
-      for k, v in tqdm.tqdm_notebook(dcms_.items()):
-        print()
-        output_dir = osp.join(odir, str(k).zfill(3), ch_name)
-        os.makedirs(output_dir, exist_ok=True)
-        for i in range(len(v)):
-          #print(f"saving {v[i]}")
-          shutil.copyfile(v[i], osp.join(output_dir, osp.basename(v[i])))
+    success = 0
+    idx = 0
+    while success == 0 :
+        tag = possible_tags[idx]
+        idx += 1
+
+        for kk, directory in enumerate(directories):
+        
+          ch_name = ch_names[kk]
+          filenames = glob.glob(directory+"*.dcm")
+          assert len(filenames) > 1
+          
+          dcms = []
+          try:
+            for i in tqdm.tqdm(range(len(filenames))):
+              dcms.append(pydicom.dcmread(filenames[i], specific_tags=[tag]))
+          except:
+            continue
+        
+          pos = [int(dcm[tag].value) for dcm in dcms]
+          nPhases = max(pos) - min(pos) + 1
+        
+          print(f"ch_name: {ch_name}, nPhases: {nPhases}, nSlices: {len(dcms[1])}")
+          dcms_ = {}
+        
+          for i in range(len(dcms)):
+            if pos[i] in dcms_:
+              dcms_[pos[i]].append(filenames[i])
+            else:
+              dcms_[pos[i]] = [filenames[i]]
+        
+          for k, v in tqdm.tqdm(dcms_.items()):
+            print()
+            output_dir = osp.join(odir, str(k).zfill(3), ch_name)
+            os.makedirs(output_dir, exist_ok=True)
+            for i in range(len(v)):
+              #print(f"saving {v[i]}")
+              shutil.copyfile(v[i], osp.join(output_dir, osp.basename(v[i])))
+
+        success = 1
+
