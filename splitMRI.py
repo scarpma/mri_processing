@@ -27,6 +27,9 @@ def get_subdir_names(patient_directory):
     elif "AP" in dir_:
       assert "AP" not in ch_names
       ch_names.append("AP")
+    #!elif "PA" in dir_:
+    #!  assert "PA" not in ch_names
+    #!  ch_names.append("PA")
     elif "RL" in dir_:
       assert "RL" not in ch_names
       ch_names.append("RL")
@@ -105,6 +108,7 @@ if __name__ == "__main__":
         os.makedirs(output_dir, exist_ok=True)
         for i in range(len(v)):
           #print(f"saving {v[i]}")
-          shutil.copyfile(v[i], osp.join(output_dir, osp.basename(v[i])))
+          #shutil.copyfile(v[i], osp.join(output_dir, osp.basename(v[i])))
+          os.symlink(v[i], osp.join(output_dir, osp.basename(v[i])))
 
 

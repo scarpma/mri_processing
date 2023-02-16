@@ -12,7 +12,7 @@ def convertToNifti(dicomFilesDirectory, outputPath):
     return
 
 
-patient_dir = "mri_prova"
+patient_dir = "/home/bcl/mri_"
 phaseNumbers = [dir.split("/")[-2] for dir in glob.glob(osp.join(patient_dir, "*/"))]
 print(f"phaseNumbers found: {phaseNumbers}")
 
